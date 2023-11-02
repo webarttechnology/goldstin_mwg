@@ -1,0 +1,148 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Eazy CF Captcha 1.1.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2020-06-13 11:57+0200\n"
+"PO-Revision-Date: 2020-06-13 11:57+0200\n"
+"Last-Translator: Tamás Kiss\n"
+"Language-Team: \n"
+"Language: de\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-KeywordsList: _;gettext;gettext_noop;_e;__\n"
+"X-Poedit-Basepath: .\n"
+"X-Generator: Poedit 2.3.1\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Poedit-SearchPath-0: .\n"
+"X-Poedit-SearchPath-1: ../.\n"
+
+#: .././includes/Admin/EazyCFCaptchaAdmin.php:26
+#: .././includes/Admin/EazyCFCaptchaAdmin.php:27
+#: .././includes/Admin/EazyCFCaptchaAdmin.php:66
+msgid "Eazy CF Captcha"
+msgstr "Eazy CF Captcha"
+
+#: .././includes/EazyCFCaptchaPlugin.php:82
+msgid "Settings"
+msgstr "Einstellungen"
+
+#: .././includes/EazyCFCaptchaPlugin.php:90
+#: .././views/admin/option-page.php:150
+msgid "Donate (PayPal)"
+msgstr "Spenden (PayPal)"
+
+#: .././includes/PluginPublic/EazyCFCPublicCommentForm.php:50
+msgid "Comment Submission Failure"
+msgstr "Kommentar Übertragungsfehler"
+
+#: .././views/admin/cf7-tag-pane.php:7 .././views/admin/cf7-tag-pane.php:10
+msgid "Field type"
+msgstr "Feldtyp"
+
+#: .././views/admin/cf7-tag-pane.php:13
+msgid "Required field"
+msgstr "Pflichtfeld"
+
+#: .././views/admin/cf7-tag-pane.php:25
+msgid "Remove honeypot"
+msgstr "Honeypot entfernen"
+
+#: .././views/admin/cf7-tag-pane.php:28 .././views/admin/cf7-tag-pane.php:31
+msgid "Remove additional honeypot"
+msgstr "Den zusätzlichen honeypot entfernen"
+
+#: .././views/admin/cf7-tag-pane.php:38 .././views/admin/cf7-tag-pane.php:42
+#: .././views/admin/option-page.php:101
+msgid "Keep it easy"
+msgstr "Einfach halten"
+
+#: .././views/admin/cf7-tag-pane.php:45
+msgid "Make the exercise easier (one digit numbers instead of two)"
+msgstr ""
+"Aufgabe einfacher machen (einstellige statt zweistellige Zahlen benutzen)"
+
+#: .././views/admin/cf7-tag-pane.php:56
+msgid "Id attribute"
+msgstr "Id-Attribut"
+
+#: .././views/admin/cf7-tag-pane.php:61
+msgid "Class attribute"
+msgstr "CSS-Klasse"
+
+#: .././views/admin/cf7-tag-pane.php:75
+msgid "Insert Tag"
+msgstr "Tag einfügen"
+
+#: .././views/admin/option-page.php:2
+msgid "Configuration"
+msgstr "Einstellungen"
+
+#: .././views/admin/option-page.php:8
+msgid "Saved."
+msgstr "Gespeichert."
+
+#: .././views/admin/option-page.php:12
+msgid "Error while saving the changes."
+msgstr "Fehler beim Speichern der Änderungen."
+
+#: .././views/admin/option-page.php:58
+msgid "Text for the Captcha Label"
+msgstr "Text für das Captcha Label"
+
+#: .././views/admin/option-page.php:69
+msgid "Error message"
+msgstr "Fehlermeldung"
+
+#: .././views/admin/option-page.php:84
+msgid "Honeypot"
+msgstr "Honeypot"
+
+#: .././views/admin/option-page.php:90
+msgid "Add honeypot"
+msgstr "Honeypot hinzufügen"
+
+#: .././views/admin/option-page.php:93
+msgid "Add an additional hidden field for enhanced security."
+msgstr "Fügt ein zusätzliches verstecktes Feld für verbesserte Sicherheit ein."
+
+#: .././views/admin/option-page.php:107
+msgid "Make the exercise easier"
+msgstr "Die Aufgabe einfacher machen"
+
+#: .././views/admin/option-page.php:110
+msgid "Use only one digit number to make it easier instead of two digits."
+msgstr ""
+"Es wird nur eine einstellige Zahl statt zweistelliger benutzt, um es "
+"einfacher zu machen."
+
+#: .././views/admin/option-page.php:122
+msgid "Deactivate in comments"
+msgstr "In Kommentaren deaktivieren"
+
+#: .././views/admin/option-page.php:128
+msgid "Deactivate"
+msgstr "Deaktivieren"
+
+#: .././views/admin/option-page.php:131
+msgid "Will be disabled in comments, but is still usable for contact form 7."
+msgstr ""
+"Wird in den Kommentaren deaktiviert, kann allerdings in Contact Form 7 "
+"weiter verwendet werden."
+
+#: .././views/admin/option-page.php:140
+msgid "Save Changes"
+msgstr "Änderungen speichern"
+
+#: .././views/admin/option-page.php:145
+msgid "Support the development of this plugin."
+msgstr "Unterstütze die Entwicklung dieses Plugins."
+
+#~ msgid "Error: please solve the captcha."
+#~ msgstr "Fehler: Bitte das Captcha lösen."
+
+#, fuzzy
+#~| msgid "Should include additional honeypot"
+#~ msgctxt "eazycfc"
+#~ msgid "Should include additional honeypot"
+#~ msgstr "Zusätzliches honeypot hinzufügen"
