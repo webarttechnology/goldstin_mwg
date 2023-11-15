@@ -55,7 +55,7 @@ class ES_DB_Sending_Queue {
 		$where       = apply_filters( 'ig_es_get_emails_to_be_sent_by_hash_condition', 'AND 1=1' );
 		$subscribers = $wpbd->get_results(
 			$wpbd->prepare(
-				"SELECT * FROM {$wpbd->prefix}ig_sending_queue WHERE status IN( %s, %s, %s ) AND mailing_queue_hash = %s $where ORDER BY FIELD(`status`, %s, %s, %s) LIMIT 0, %d",
+				"SELECT * FROM {$wpbd->prefix}ig_sending_queue WHERE status IN( %s, %s, %s ) AND mailing_queue_hash = %s $where ORDER BY FIELD(`status`, %s, %s, %s), id LIMIT 0, %d",
 				array(
 					IG_ES_SENDING_QUEUE_STATUS_QUEUED,
 					IG_ES_SENDING_QUEUE_STATUS_SENDING,
@@ -444,7 +444,8 @@ class ES_DB_Sending_Queue {
 				   {$send_at_query}
 			FROM `{$wpbd->prefix}ig_contacts` AS `ig_contacts` 
 			WHERE id IN ( " . $sql_query . ')
-			GROUP BY `ig_contacts`.`email`',
+			GROUP BY `ig_contacts`.`email`
+			ORDER BY `ig_contacts`.`email`',
 			$query_args
 		);
 		
@@ -480,7 +481,8 @@ class ES_DB_Sending_Queue {
 			       	{$send_at_query}
 				FROM `{$wpbd->prefix}ig_contacts` AS `ig_contacts` 
 				WHERE id IN ( " . $sql_query . ')
-				GROUP BY `ig_contacts`.`email`',
+				GROUP BY `ig_contacts`.`email`
+				ORDER BY `ig_contacts`.`email`',
 				$query_args
 			)
 		);

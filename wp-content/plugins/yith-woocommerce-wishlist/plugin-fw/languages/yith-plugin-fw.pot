@@ -4,7 +4,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: YITH <plugins@yithemes.com>\n"
-"POT-Creation-Date: 2023-10-09 08:44:56+00:00\n"
+"POT-Creation-Date: 2023-11-10 06:33:34+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -259,6 +259,11 @@ msgstr ""
 
 #: includes/class-yith-post-type-admin.php:286
 msgid "Back to the list"
+msgstr ""
+
+#: includes/class-yith-post-type-admin.php:387
+#. translators: Hidden accessibility text.
+msgid "Show more details"
 msgstr ""
 
 #: includes/class-yith-system-status.php:107
@@ -658,7 +663,7 @@ msgstr ""
 msgid "Log Files"
 msgstr ""
 
-#: templates/sysinfo/system-information-panel.php:22
+#: templates/sysinfo/system-information-panel.php:28
 msgid "YITH System Information"
 msgstr ""
 

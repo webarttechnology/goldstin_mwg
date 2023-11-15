@@ -9,8 +9,8 @@ global $wpdb;
 
 $audience_url              = admin_url( 'admin.php?page=es_subscribers' );
 $new_contact_url           = admin_url( 'admin.php?page=es_subscribers&action=new' );
-$new_broadcast_url         = admin_url( 'admin.php?page=es_gallery&campaign-type=newsletter' );
-$new_post_notification_url = admin_url( 'admin.php?page=es_gallery&campaign-type=post_notification' );
+$new_broadcast_url         = admin_url( 'admin.php?page=es_campaigns#!/gallery?campaignType=newsletter' );
+$new_post_notification_url = admin_url( 'admin.php?page=es_campaigns#!/gallery?campaignType=post_notification' );
 $new_sequence_url          = admin_url( 'admin.php?page=es_sequence&action=new' );
 $new_form_url              = admin_url( 'admin.php?page=es_forms&action=new' );
 $new_list_url              = admin_url( 'admin.php?page=es_lists&action=new' );
@@ -212,7 +212,7 @@ $allowed_html_tags = ig_es_allowed_html_tags_in_esc();
 						'sequence_message'
 					)
 				);
-				$sequence_messages = ES()->campaigns_db->get_all_campaigns( $campaign_args );
+				$sequence_messages = ES()->campaigns_db->get_campaigns( $campaign_args );
 				ES_Admin::get_view(
 					'dashboard/sequence',
 					array(

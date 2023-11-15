@@ -114,6 +114,19 @@ if ( ! function_exists( 'ig_es_get_current_date' ) ) {
 	}
 }
 
+if ( ! function_exists( 'ig_es_get_current_month' ) ) {
+	/**
+	 * Get current month
+	 *
+	 * @return false|string
+	 *
+	 * @since 4.1.15
+	 */
+	function ig_es_get_current_month() {
+		return gmdate( 'Y-m' );
+	}
+}
+
 if ( ! function_exists( 'ig_es_get_current_hour' ) ) {
 	/**
 	 * Get current hour

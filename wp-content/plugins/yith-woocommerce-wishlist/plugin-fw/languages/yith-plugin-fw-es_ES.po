@@ -4,7 +4,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: YITH Framework\n"
 "Report-Msgid-Bugs-To: YITH <plugins@yithemes.com>\n"
-"POT-Creation-Date: 2023-10-09 08:44:56+00:00\n"
+"POT-Creation-Date: 2023-11-10 06:33:34+00:00\n"
 "PO-Revision-Date: 2023-07-06 06:04:36+0000\n"
 "Language: es\n"
 "MIME-Version: 1.0\n"
@@ -277,6 +277,11 @@ msgstr "Volver a \"%s\""
 #: includes/class-yith-post-type-admin.php:286
 msgid "Back to the list"
 msgstr "Volver a la lista"
+
+#. translators: Hidden accessibility text.
+#: includes/class-yith-post-type-admin.php:387
+msgid "Show more details"
+msgstr ""
 
 #: includes/class-yith-system-status.php:107
 msgid "WordPress Version"
@@ -688,7 +693,7 @@ msgstr "Información PHP"
 msgid "Log Files"
 msgstr "Archivos de registro"
 
-#: templates/sysinfo/system-information-panel.php:22
+#: templates/sysinfo/system-information-panel.php:28
 msgid "YITH System Information"
 msgstr "Información de Sistema de YITH"
 

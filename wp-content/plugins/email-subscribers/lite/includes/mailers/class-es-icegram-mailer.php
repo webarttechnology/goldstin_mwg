@@ -91,7 +91,9 @@ if ( ! class_exists( 'ES_Icegram_Mailer' ) ) {
 		 * 
 		 * @since 5.6.0
 		 */
-		public $batch_limit = 30;
+		public $batch_limit = 100;
+
+		public $remaining_limit = null;
 
 		/**
 		 * ES_Icegram_Mailer constructor.
@@ -366,6 +368,11 @@ if ( ! class_exists( 'ES_Icegram_Mailer' ) ) {
 				if ( ! empty( $body ) ) {
 					$status = ! empty( $body['status'] ) ? $body['status'] : 'error';
 					if ( 'success' === $status ) {
+						if ( isset( $body['remaining_limit'] ) ) {
+							$this->remaining_limit = $body['remaining_limit'];
+						} else {
+							$this->remaining_limit -= $this->current_batch_size;
+						}
 						ES()->logger->info( 'Email Sent Successfully Using Icegram', $this->logger_context );
 						return $this->do_response( 'success' );
 					} else {
@@ -748,6 +755,11 @@ if ( ! class_exists( 'ES_Icegram_Mailer' ) ) {
 				if ( ! empty( $body ) ) {
 					$status = ! empty( $body['status'] ) ? $body['status'] : 'error';
 					if ( 'success' === $status ) {
+						if ( isset( $body['remaining_limit'] ) ) {
+							$this->remaining_limit = $body['remaining_limit'];
+						} else {
+							$this->remaining_limit -= $this->current_batch_size;
+						}
 						ES()->logger->info( 'Email Sent Successfully Using Icegram', $this->logger_context );
 						return $this->do_response( 'success' );
 					} else {
@@ -779,7 +791,7 @@ if ( ! class_exists( 'ES_Icegram_Mailer' ) ) {
 		 * @since 5.6.0
 		 */
 		public function is_batch_limit_reached() {
-			return $this->current_batch_size >= $this->batch_limit;
+			return $this->current_batch_size >= $this->batch_limit || $this->current_batch_size >= $this->remaining_limit;
 		}
 	}
 

@@ -21,17 +21,17 @@
 // ** MySQL settings - You can get this info from your web host ** //
 /** The name of the database for WordPress */
 
-// define( 'DB_NAME', 'webbersunited_goldstein_db' );
-define( 'DB_NAME', 'goldstein' );
+define( 'DB_NAME', 'webbersunited_goldstein_db' );
+// define( 'DB_NAME', 'goldstein' );
 
 /** MySQL database username */
-// define( 'DB_USER', 'webbersunited_goldstein_db' );
+define( 'DB_USER', 'webbersunited_goldstein_db' );
 
-define( 'DB_USER', 'root' );
+// define( 'DB_USER', 'root' );
 
 /** MySQL database password */
-// define( 'DB_PASSWORD', 'ncS9_f$h(,$0' );
-define( 'DB_PASSWORD', '' );
+define( 'DB_PASSWORD', 'ncS9_f$h(,$0' );
+// define( 'DB_PASSWORD', '' );
 
 /** MySQL hostname */
 define( 'DB_HOST', 'localhost' );

@@ -2,7 +2,7 @@
 Contributors: deliciousbrains, wpengine, elliotcondon, mattshaw, lgladdy, antpb, andrewbotz, dalewilliams, polevaultweb
 Tags: acf, fields, custom fields, meta, repeater
 Requires at least: 5.8
-Tested up to: 6.3
+Tested up to: 6.4
 Requires PHP: 7.0
 Stable tag: 6.2.2
 License: GPLv2 or later

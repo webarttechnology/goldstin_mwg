@@ -738,6 +738,23 @@ class ES_Common {
 		return $none_html . $all_html . $category_html;
 	}
 
+	public static function get_post_categories() {
+		$categories = get_terms(
+			array(
+				'taxonomy'   => 'category',
+				'hide_empty' => false,
+			)
+		);
+		if ( empty( $categories ) ) {
+			return array();
+		}
+		$post_categories = array();
+		foreach ( $categories as $category ) {
+			$post_categories[$category->term_id ] = $category->name;
+		}
+		return $post_categories;
+	}
+
 	/**
 	 * Get list of default post types
 	 *
@@ -783,6 +800,27 @@ class ES_Common {
 		$custom_post_types = get_post_types( $args );
 
 		return $custom_post_types;
+	}
+
+	public static function get_post_types_name() {
+		$default_post_types = self::get_default_post_types();
+		$custom_post_types  = self::get_custom_post_types();
+		$post_types         = array_merge( $default_post_types, $custom_post_types );
+		$post_type_names    = array();
+		if ( ! empty( $post_types ) ) {
+			foreach ( $post_types as $post_type ) {
+				$post_type_name                = self::get_post_type_name( $post_type );
+				$post_type_names[ $post_type ] = $post_type_name;
+			}
+		}
+
+		return $post_type_names;
+	}
+
+	public static function get_post_type_name( $post_type ) {
+		$post_type_object = get_post_type_object( $post_type );
+		$post_type_name   = $post_type_object->labels->singular_name;
+		return $post_type_name;
 	}
 
 	/**
@@ -857,13 +895,10 @@ class ES_Common {
 			if ( empty( $categories ) ) {
 				continue;
 			}
-
-			$taxonomy_categories = array();
+			
 			foreach ( $categories as $category ) {
-				$taxonomy_categories[ $category->term_id ] = $category->name;
+				$post_type_categories[ $category->term_id ] = $category->name;
 			}
-
-			$post_type_categories[ $taxonomy_slug ] = $taxonomy_categories;
 		}
 
 		return $post_type_categories;
@@ -2087,10 +2122,11 @@ class ES_Common {
 
 		$statuses = array(
 			'0' => __( 'Draft', 'email-subscribers' ),
-			'3' => __( 'Sending', 'email-subscribers' ),
-			'2' => __( 'Scheduled', 'email-subscribers' ),
-			'5' => __( 'Sent', 'email-subscribers' ),
 			'1' => __( 'Active', 'email-subscribers' ),
+			'2' => __( 'Scheduled', 'email-subscribers' ),
+			'3' => __( 'Sending', 'email-subscribers' ),
+			'4' => __( 'Paused', 'email-subscribers' ),
+			'5' => __( 'Sent', 'email-subscribers' ),
 		);
 
 		if ( $reverse ) {
@@ -2098,6 +2134,19 @@ class ES_Common {
 		}
 
 		return $statuses;
+	}
+
+	public static function get_campaign_status_code_map() {
+		$status_codes = array(
+			'draft'      => IG_ES_CAMPAIGN_STATUS_IN_ACTIVE,
+			'active'     => IG_ES_CAMPAIGN_STATUS_ACTIVE,
+			'scheduled'  => IG_ES_CAMPAIGN_STATUS_SCHEDULED,
+			'queued'     => IG_ES_CAMPAIGN_STATUS_QUEUED,
+			'paused'     => IG_ES_CAMPAIGN_STATUS_PAUSED,
+			'finished'   => IG_ES_CAMPAIGN_STATUS_FINISHED,
+		);
+
+		return $status_codes;
 	}
 
 	/**
@@ -2455,18 +2504,14 @@ class ES_Common {
 	 */
 	public static function override_tinymce_formatting_options( $init, $editor_id = '' ) {
 
-		if ( 'edit-es-campaign-body' === $editor_id ) {
+		$init['wpautop']      = false; // Disable stripping of p tags in Text mode.
+		$init['tadv_noautop'] = true; // Disable stripping of p tags in Text mode.
+		$init['indent']       = true;
 
-			$init['wpautop']      = false; // Disable stripping of p tags in Text mode.
-			$init['tadv_noautop'] = true; // Disable stripping of p tags in Text mode.
-			$init['indent']       = true;
-
-			// To disable stripping of some HTML elements like span when switching modes in wp editor from text-visual-text.
-			$opts                            = '*[*]';
-			$init['valid_elements']          = $opts;
-			$init['extended_valid_elements'] = $opts;
-
-		}
+		// To disable stripping of some HTML elements like span when switching modes in wp editor from text-visual-text.
+		$opts                            = '*[*]';
+		$init['valid_elements']          = $opts;
+		$init['extended_valid_elements'] = $opts;
 
 		return $init;
 	}
@@ -2961,5 +3006,132 @@ class ES_Common {
 		} catch ( Exception $e ) {
 			return null;
 		}
+	}
+
+	public static function replace_posts_blocks( $content, $post_ids ) {
+		foreach ( $post_ids as $single_block_post_ids ) {
+			$content = self::replace_single_posts_block( $content, $single_block_post_ids );
+		}
+		return $content;
+	}
+
+	public static function replace_single_posts_block( $content, $single_block_post_ids ) {
+		$posts_block_inner_content = self::get_in_between_content( $content, '{{campaign.posts}}', '{{/campaign.posts}}' );
+		$find                      = '{{campaign.posts}}' . $posts_block_inner_content . '{{/campaign.posts}}';
+		$replace                   = '';
+		if ( ! empty( $single_block_post_ids ) ) {
+			foreach ( $single_block_post_ids as $post_id ) {
+				$replace .= ES_Handle_Post_Notification::prepare_body( $posts_block_inner_content, $post_id, 0 );
+			}
+		}
+		$content = str_replace( $find, $replace, $content );
+		return $content;
+	}
+
+	public static function contains_posts_block( $content ) {
+		return strpos( $content, '{{campaign.posts}}' ) !== false;
+	}
+
+	public static function replace_post_digest_keyword_with_posts_keyword( $content ) {
+		$find = array( '{{post.digest}}', '{{/post.digest}}' );
+		$replace = array( '{{campaign.posts}}', '{{/campaign.posts}}' );
+		$content = str_replace( $find, $replace , $content );
+
+		$find = array( '{{POSTDIGEST}}', '{{/POSTDIGEST}}' );
+		$replace = array( '{{campaign.posts}}', '{{/campaign.posts}}' );
+		$content = str_replace( $find, $replace , $content );
+		return $content;
+	}
+
+	public static function wrap_post_keywords_between_campaign_posts_keyword( $text ) {
+		$pattern = '/(<[^>]*>\s*\{{(DATE|[Pp][^\{\}]*)}}\s*<\/[^>]*>)|(<[^>]*?({{(DATE|[Pp][^\{\}]*)}})[^>]*>.*?<\/\w+>)|(<[^>]*{{(DATE|[Pp][^\{\}]*)}}[^>]*>)|(\{\{[PpD][^\}]*\}\})/';
+		preg_match_all($pattern, $text, $matches);
+
+		if (!empty($matches[0])) {
+			if ( count( $matches[0] ) > 1 ) {
+				$firstKeyword = $matches[0][0];
+				$lastKeyword = $matches[0][count($matches[0]) - 1];
+		
+				$wrappedText = preg_replace('/(' . preg_quote($firstKeyword, '/') . '.*?' . preg_quote($lastKeyword, '/') . ')/s', '{{campaign.posts}}$1{{/campaign.posts}}', $text, 1);
+
+			} else {
+				$keyword = $matches[0][0];
+				$wrappedText = str_replace( $keyword, '{{campaign.posts}}' . $keyword . '{{/campaign.posts}}', $text );
+			}
+
+			return $wrappedText;
+		} else {
+			return $text;
+		}
+	}
+
+	public static function get_campaign_default_data( $campaign_type ) {
+		$default_content = apply_filters( 'ig_es_' . $campaign_type . '_default_content', '' );
+		$default_subject = apply_filters( 'ig_es_' . $campaign_type . '_default_subject', '' );
+		return array(
+			'subject' => $default_subject,
+			'content' => $default_content
+		);
+	}
+
+	public static function get_tags() {
+		$subscriber_tags = self::get_subscriber_tags();
+		$site_tags 		 = self::get_site_tags();
+		$campaign_tags   = self::get_campaign_tags();
+		return array(
+			'subscriber_tags' => $subscriber_tags,
+			'site_tags' => $site_tags,
+			'campaign_tags' => $campaign_tags,
+		);
+	}
+
+	public static function get_campaign_tags() {
+
+		$post_notification_tags = self::get_post_notification_tags();
+
+		$campaign_tags = array(
+			'post_notification' => $post_notification_tags,
+		);
+
+		return apply_filters( 'ig_es_campaign_tags', $campaign_tags );
+	}
+
+	public static function get_post_notification_tags() {
+		$post_notification_tags = array(
+			'{{post.date}}',
+			'{{post.title}}',
+			'{{post.image}}',
+			'{{post.excerpt}}',
+			'{{post.description}}',
+			'{{post.author}}',
+			'{{post.link}}',
+			'{{post.link_with_title}}',
+			'{{post.link_only}}',
+			'{{post.full}}',
+			'{{post.cats}}',
+			'{{post.more_tag}}',
+			'{{post.image_url}}'
+		);
+		return apply_filters( 'ig_es_post_notification_tags', $post_notification_tags );
+	}
+
+	public static function get_subscriber_tags() {
+		$subscriber_tags = array(
+			'{{subscriber.name}}',
+			'{{subscriber.first_name}}',
+			'{{subscriber.last_name}}',
+			'{{subscriber.email}}',
+		);
+		return apply_filters( 'ig_es_subscriber_tags', $subscriber_tags );
+	}
+
+	public static function get_site_tags() {
+		$site_tags = array(
+			'{{site.total_contacts}}',
+			'{{site.url}}',
+			'{{site.name}}',
+		);
+
+		return apply_filters( 'ig_es_site_tags', $site_tags );
 	}
 }

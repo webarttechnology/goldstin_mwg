@@ -12,8 +12,10 @@
 			});
 
 			// Toggle Dropdown
-			$('#ig-es-add-tags-button').click(function () {
-				$('#ig-es-tags-dropdown').toggle();
+			$('body')
+			.on('click', '#ig-es-add-tags-button', function (e) {
+				e.preventDefault();
+			$('#ig-es-tags-dropdown').toggle();
 			});
 
 			// When we click outside, close the dropdown
@@ -1231,8 +1233,6 @@
 				  json[name] = value;
 				  return json;
 				}, {}); 
-
-				console.log('formData:', formData);
 
 				// Add action to form data
 				form_data += form_data + '&action=ig_es_get_campaign_preview&preview_type=inline&security='  + ig_es_js_data.security;
@@ -4032,6 +4032,7 @@ function ig_es_load_iframe_preview( parent_selector, iframe_html ) {
 	jQuery(iframe).attr("srcdoc", iframe_html);
 }
 
+window.ig_es_load_iframe_preview = ig_es_load_iframe_preview
 
 function ig_es_resize_iframe( ifram_elem ) {
 
@@ -4058,6 +4059,24 @@ function ig_es_is_valid_email( email ) {
 
 window.ig_es_is_valid_json = ig_es_is_valid_json;
 
+function renderESClassicEditor( containerId, content ) {
+	if ( jQuery.fn.wp_js_editor ) {
+		jQuery( '#' + containerId ).val(content).wp_js_editor();
+	} else {
+		setTimeout(() => {
+			jQuery( '#' + containerId ).val(content).wp_js_editor();
+		},300)
+	}
+}
+
+window.renderESClassicEditor = renderESClassicEditor
+
+function removeESClassicEditor( containerId ) {
+	jQuery( '#' + containerId ).wp_js_editor('remove');
+}
+
+window.removeESClassicEditor = removeESClassicEditor
+
 function ig_es_add_dnd_rte_tags(CampaignOrEditorType) {
 	let option_html = '';
   
@@ -4072,7 +4091,7 @@ function ig_es_add_dnd_rte_tags(CampaignOrEditorType) {
 	};
   
 	if (CampaignOrEditorType === 'post_notification') {
-	  addOptgroup('Post', ig_es_campaign_editor_data.campaignTags);
+	  addOptgroup('Post', ig_es_campaign_editor_data.postTags);
 	  addOptgroup('Subscriber', ig_es_campaign_editor_data.subscriberTags);
 	  addOptgroup('Site', ig_es_campaign_editor_data.siteTags);
 	}
@@ -4157,3 +4176,131 @@ jQuery.fn.extend({
 		});
 	}
 });
+
+//app.js code started
+// jQuery(document).ready(function(){
+
+// 	$('.ig-es-campaigns-recipient, .ig-es-campaigns-recipient2, .ig-es-campaigns-recipient3, .ig-es-post-types, .ig-es-select-post-category').select2({
+// 	  placeholder: "Select",
+// 	  closeOnSelect : false
+// 	})
+  
+//   });
+  
+  
+  // Get all buttons with class="btn" inside the container
+//   var nav_btns = document.getElementsByClassName("ig-es-campaign-sidebar-nav-menu");
+//   // Loop through the buttons and add the active class to the current/clicked button
+//   for (var i = 0; i < nav_btns.length; i++) {
+	
+// 	nav_btns[i].addEventListener("click", function( event ) {
+// 	  event.preventDefault();
+// 	  for (let element of nav_btns) {
+// 		element.classList.remove('active');
+// 		let section = element.getAttribute("href");
+// 		document.getElementById(section.replace("#", "")).classList.add("hidden");
+// 	  }
+	 
+// 	  this.className += " active"; 
+// 	  let section_display = this.getAttribute("href");
+// 	  document.getElementById(section_display.replace("#", "")).classList.remove("hidden")
+// 	  document.getElementById(this).classList.add("active")
+	
+// 	});
+//   }
+  
+//   function setupAccordion() {
+// 		const accordionButtons = document.querySelectorAll(".accordion button, .accordion p");
+// 		Array.prototype.forEach.call(accordionButtons, btn => {
+// 		let target = btn.parentElement.nextElementSibling;
+// 		btn.onclick = () => {
+// 		  let expanded = btn.getAttribute('aria-expanded') === 'true' || false;
+// 		  btn.setAttribute('aria-expanded', !expanded);
+// 		  target.hidden = expanded;
+// 		  let indicator = btn.querySelectorAll('svg')[0];
+// 		  indicator.classList.toggle("transform");
+// 		  indicator.classList.toggle("rotate-90");
+// 		}
+// 		target.hidden = true;
+// 	  })
+// 	} 
+  
+// 	// Do on load setup here
+// 	function initializeSiteCode() {
+// 	  setupAccordion();
+// 	}
+  
+  
+// 	// If document is ready already, just initialize
+// 	if (document.readyState !== 'loading') {
+// 	  initializeSiteCode();
+// 	} else {
+// 	  // Else wait for ready state
+// 	  document.addEventListener('DOMContentLoaded', function () {
+// 		initializeSiteCode();
+// 	  });
+// 	}
+  
+	function showDropDown(){
+		const dropdownButton = document.getElementById('menu-button');
+		const dropdownMenu = document.getElementById('dropdown-menu');
+        if( dropdownButton && dropdownMenu){
+			dropdownButton.addEventListener('click', () => {
+			const isExpanded = dropdownButton.getAttribute('aria-expanded') === 'true';
+			dropdownButton.setAttribute('aria-expanded', !isExpanded);
+		
+			dropdownMenu.classList.toggle('hidden');
+			dropdownMenu.classList.toggle('scale-100');
+			dropdownMenu.classList.toggle('opacity-100');
+			dropdownMenu.classList.toggle('scale-95');
+			dropdownMenu.classList.toggle('opacity-0');
+			});
+			// Close the dropdown menu when clicking outside
+			document.addEventListener('click', (event) => {
+			if (!dropdownButton.contains(event.target) && !dropdownMenu.contains(event.target)) {
+				dropdownButton.setAttribute('aria-expanded', 'false');
+				dropdownMenu.classList.add('hidden');
+				dropdownMenu.classList.remove('scale-100', 'opacity-100');
+				dropdownMenu.classList.add('scale-95', 'opacity-0');
+			}
+			});
+		}
+  
+	}
+//   document.addEventListener('DOMContentLoaded', () => {
+// 	const dropdownButton = document.getElementById('menu-button');
+// 	const dropdownMenu = document.getElementById('dropdown-menu');
+  
+// 	dropdownButton.addEventListener('click', () => {
+// 	  const isExpanded = dropdownButton.getAttribute('aria-expanded') === 'true';
+// 	  dropdownButton.setAttribute('aria-expanded', !isExpanded);
+  
+// 	  dropdownMenu.classList.toggle('hidden');
+// 	  dropdownMenu.classList.toggle('scale-100');
+// 	  dropdownMenu.classList.toggle('opacity-100');
+// 	  dropdownMenu.classList.toggle('scale-95');
+// 	  dropdownMenu.classList.toggle('opacity-0');
+// 	});
+  
+// 	// Close the dropdown menu when clicking outside
+// 	document.addEventListener('click', (event) => {
+// 	  if (!dropdownButton.contains(event.target) && !dropdownMenu.contains(event.target)) {
+// 		dropdownButton.setAttribute('aria-expanded', 'false');
+  
+// 		dropdownMenu.classList.add('hidden');
+// 		dropdownMenu.classList.remove('scale-100', 'opacity-100');
+// 		dropdownMenu.classList.add('scale-95', 'opacity-0');
+// 	  }
+// 	});
+//   });
+  
+//   const viewAllTags = document.getElementById('view-all-tags');
+//   const secondaryList = document.querySelector('.secondary-list');
+//   const dropdownIcon = document.querySelector('.transition-transform');
+  
+//   viewAllTags.addEventListener('click', () => {
+// 	secondaryList.classList.toggle('hidden');
+// 	dropdownIcon.classList.toggle('rotate-180');
+//   });
+  
+//app.js code ended

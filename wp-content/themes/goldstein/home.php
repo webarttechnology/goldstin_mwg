@@ -214,7 +214,7 @@ get_header();
                     <li>Lawsuit Seeking Monetary Compensation for Damage to a Building Caused by Blasting and Other
                         Demolition and Construction on a Building Adjacent to the Damaged Building</li>
                 </ul>
-                <h3>NY Wills, Trusts, Probate and Estates Lawyer</h3>
+                <h1 style="color:#da9b89 !important">NY Wills, Trusts, Probate and Estates Lawyer</h1>
                 <p>Michael W. Goldstein is an experienced New York Wills & Probate Lawyer who has been practicing New
                     York law since 1979.</p>
                 <h3>Last Will and Testament</h3>
@@ -241,8 +241,8 @@ get_header();
                     title, and to pay or collect the required sums of money to complete the transaction on your behalf.
                 </p>
 <!--                 <h1 class="display-5 text-theme font-weight-normal areas-law">Other Areas of New York Law</h1> -->
-				<h3>Other Areas of New York Law</h3>
-                <h3>NY Personal Injury Litigation</h3>
+<!-- 				<h3>Other Areas of New York Law</h3> <br> -->
+                <h1 style="color:#da9b89 !important">NY Personal Injury Litigation</h1>
                 <p>Michael W. Goldstein is an experienced New York litigator. In addition to commercial litigation, real
                     estate litigation, mechanic’s lien litigation, and estate litigation, our law firm also provides
                     compassionate, resourceful & effective representation for people seriously injured in various types
@@ -272,7 +272,7 @@ get_header();
                     distribution of marital property, and child support. In addition, our co-counsel works hard to
                     achieve child custody and child visitation arrangements that are fair to our client, and beneficial
                     for the children.</p>
-                <h3>NY Criminal Defense Lawyer</h3>
+                <h1 style="color:#da9b89 !important">NY Criminal Defense Lawyer</h1>
                 <p>We work with experienced criminal defense trial lawyers to aggressively defend our clients who are
                     charged with crimes in the New York State courts as well as the Federal courts. If you or a loved
                     one needs an aggressive New York criminal defense attorney, contact us by phone, or complete our

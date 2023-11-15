@@ -883,9 +883,9 @@ class ES_Admin_Settings {
 		$html                      = '';
 		$opted_for_sending_service = get_option( 'ig_es_ess_opted_for_sending_service', 'no' );
 		$es_ess_data               = get_option( 'ig_es_ess_data', '' );
-		$current_date              = ig_es_get_current_date();
+		$current_month              = ig_es_get_current_month();
 		$allocated_limit           = isset( $es_ess_data['allocated_limit'] ) ? $es_ess_data['allocated_limit']: 0;
-		$used_limit                = isset( $es_ess_data['used_limit'][$current_date] ) ? $es_ess_data['used_limit'][$current_date] : 0;
+		$used_limit                = isset( $es_ess_data['used_limit'][$current_month] ) ? $es_ess_data['used_limit'][$current_month] : 0;
 		$plan                      = ES_Service_Email_Sending::get_plan();
 		$premium_plans             = array( 'pro', 'max' );
 		$is_premium_plan           = in_array( $plan, $premium_plans, true );
@@ -906,7 +906,7 @@ class ES_Admin_Settings {
 			<p class="pl-11 text-xs italic font-normal leading-snug text-gray-500">
 				<?php
 					/* translators: %s Break tag */
-					echo sprintf( esc_html__( 'Use this to get high speed & reliable email delivery via %sIcegram\'s own Email Sending Service at 100 free emails/day.', 'email-subscribers' ), '<br/>' );
+					echo sprintf( esc_html__( 'Use this to get high speed & reliable email delivery via %sIcegram\'s own Email Sending Service at 3000 free emails/ month.', 'email-subscribers' ), '<br/>' );
 				?>
 			</p>
 		</section>

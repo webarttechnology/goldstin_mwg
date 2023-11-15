@@ -42,7 +42,6 @@ if ( ! class_exists( 'ES_Campaign_Admin' ) ) {
 		}
 
 		public function register_hooks() {
-
 			add_action( 'ig_es_before_' . IG_CAMPAIGN_TYPE_POST_NOTIFICATION . '_content_settings', array( $this, 'show_save_as_template' ) );
 			add_action( 'ig_es_before_' . IG_CAMPAIGN_TYPE_POST_DIGEST . '_content_settings', array( $this, 'show_save_as_template' ) );
 			add_action( 'ig_es_before_' . IG_CAMPAIGN_TYPE_NEWSLETTER . '_content_settings', array( $this, 'show_save_as_template' ) );
@@ -76,7 +75,7 @@ if ( ! class_exists( 'ES_Campaign_Admin' ) ) {
 		}
 
 		public function get_campaign_id_from_url() {
-			$campaign_id = ig_es_get_request_data( 'list' );
+			$campaign_id = ig_es_get_request_data( 'id' );
 			return $campaign_id;
 		}
 
@@ -199,7 +198,7 @@ if ( ! class_exists( 'ES_Campaign_Admin' ) ) {
 
 			global $wpdb;
 
-			$campaign_id   = ig_es_get_request_data( 'list' );
+			$campaign_id   = ig_es_get_request_data( 'id' );
 			$submitted     = ig_es_get_request_data( 'ig_es_campaign_submitted' );
 			$campaign_data = ig_es_get_request_data( 'data', array(), false );
 			$message_data  = array();

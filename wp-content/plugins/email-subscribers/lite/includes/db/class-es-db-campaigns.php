@@ -805,6 +805,7 @@ class ES_DB_Campaigns extends ES_DB {
 
 		if ( ! empty( $id_str ) ) {
 
+			$query = $wpbd->prepare( "UPDATE {$wpbd->prefix}ig_campaigns SET status = %d WHERE id IN({$id_str})", $status );
 			$updated = $wpbd->query( $wpbd->prepare( "UPDATE {$wpbd->prefix}ig_campaigns SET status = %d WHERE id IN({$id_str})", $status ) );
 
 			// Changing status of child campaigns along with its parent campaign id
@@ -859,7 +860,11 @@ class ES_DB_Campaigns extends ES_DB {
 					$this->save_campaign( $child_campaign );
 				}
 			}
+
+			return $duplicate_campaign_id;
 		}
+
+		return false;
 	}
 
 	/**
@@ -871,42 +876,35 @@ class ES_DB_Campaigns extends ES_DB {
 	 *
 	 * @since 4.6.11
 	 */
-	public function get_all_campaigns( $args = array() ) {
+	public function get_campaigns( $args = array() ) {
 		global $wpbd;
-
 		$where = '';
-
-		if ( ! empty( $args['include_types'] ) ) {
-			$type_count        = count( $args['include_types'] );
-			$type_placeholders = array_fill( 0, $type_count, '%s' );
-			$where            .= $wpbd->prepare( 'type IN( ' . implode( ',', $type_placeholders ) . ' )', $args['include_types'] );
+		$conditions = array(
+			'include_types'    => 'type IN',
+			'exclude_types'    => 'type NOT IN',
+			'status'           => 'status IN',
+			'campaigns_in'     => 'id IN',
+			'campaigns_not_in' => 'id NOT IN',
+		);
+	
+		foreach ( $conditions as $arg_key => $sql_operator ) {
+			if ( ! empty( $args[ $arg_key ] ) ) {
+				$count        = count( $args[ $arg_key ] );
+				$placeholders = array_fill( 0, $count, '%s' );
+				$where .= ( empty( $where ) ? ' ' : ' AND ' ) . $wpbd->prepare( "{$sql_operator} ( " . implode( ',', $placeholders ) . ' )', $args[ $arg_key ] );
+			}
 		}
 
-		if ( ! empty( $args['exclude_types'] ) ) {
-			$type_count        = count( $args['exclude_types'] );
-			$type_placeholders = array_fill( 0, $type_count, '%s' );
-			$where            .= $wpbd->prepare( 'type NOT IN( ' . implode( ',', $type_placeholders ) . ' )', $args['exclude_types'] );
+		$output          = ! empty( $args['output'] ) ? $args['output'] : ARRAY_A;
+		$use_cache       = false; 
+		$order_by_column = ! empty( $args['order_by_column'] ) ? $args['order_by_column'] : '';
+		$order           = ! empty( $args['order'] ) ? $args['order'] : '';
+	   
+		if (! empty( $args['is_campaigns_listing'] )) {
+		$order .= '    LIMIT ' . $args['offset'] . ', ' . $args['per_page'];
 		}
 
-		if ( ! empty( $args['status'] ) ) {
-			$status_count        = count( $args['status'] );
-			$status_placeholders = array_fill( 0, $status_count, '%d' );
-			$where              .= $wpbd->prepare( ' AND status IN( ' . implode( ',', $status_placeholders ) . ' )', $args['status'] );
-		}
-
-		if ( ! empty( $args['campaigns_in'] ) ) {
-			$ids_count        = count( $args['campaigns_in'] );
-			$ids_placeholders = array_fill( 0, $ids_count, '%d' );
-			$where           .= $wpbd->prepare( ' AND id IN( ' . implode( ',', $ids_placeholders ) . ' )', $args['campaigns_in'] );
-		}
-
-		if ( ! empty( $args['campaigns_not_in'] ) ) {
-			$ids_count        = count( $args['campaigns_not_in'] );
-			$ids_placeholders = array_fill( 0, $ids_count, '%d' );
-			$where           .= $wpbd->prepare( ' AND id NOT IN( ' . implode( ',', $ids_placeholders ) . ' )', $args['campaigns_not_in'] );
-		}
-
-		return $this->get_by_conditions( $where );
+		return $this->get_by_conditions( $where, $output, $use_cache, $order_by_column, $order );
 	}
 
 	/**
@@ -943,8 +941,12 @@ class ES_DB_Campaigns extends ES_DB {
 						foreach ( $condition_group as $j => $condition ) {
 							$condition_field = isset( $condition['field'] ) ? $condition['field'] : '';
 							if ( '_lists__in' === $condition_field ) {
-								if ( ! empty( $condition['value'] ) && is_array( $condition['value'] ) ) {
-									$list_ids = array_merge( $list_ids, $condition['value'] );
+								if ( ! empty( $condition['value'] ) ) {
+									if ( is_array( $condition['value'] ) ) {
+										$list_ids = array_merge( $list_ids, $condition['value'] );
+									} else {
+										$list_ids = array( $condition['value'] );
+									}
 								}
 							}
 						}
@@ -985,7 +987,7 @@ class ES_DB_Campaigns extends ES_DB {
 			'include_types' => array( 'newsletter','post_notification','post_digest'),
 		);
 	
-		$campaigns = self::get_all_campaigns($campaign_types);
+		$campaigns = self::get_campaigns($campaign_types);
 
 		if ( count($campaigns) > 0 ) {
 			foreach ($campaigns as $campaign) {

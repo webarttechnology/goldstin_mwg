@@ -6,25 +6,20 @@
 <IfModule mod_rewrite.c>
 RewriteEngine On
 RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
-RewriteBase /goldstein/
+RewriteBase /cms/goldstein/
 RewriteRule ^index\.php$ - [L]
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
-RewriteRule . /goldstein/index.php [L]
+RewriteRule . /cms/goldstein/index.php [L]
 </IfModule>
 
 # END WordPress
 
+
+
+
+
 # Wordfence WAF
-<IfModule mod_php5.c>
-	php_value auto_prepend_file 'C:\xampp\htdocs\goldstein/wordfence-waf.php'
-</IfModule>
-<IfModule mod_php7.c>
-	php_value auto_prepend_file 'C:\xampp\htdocs\goldstein/wordfence-waf.php'
-</IfModule>
-<IfModule mod_php.c>
-	php_value auto_prepend_file 'C:\xampp\htdocs\goldstein/wordfence-waf.php'
-</IfModule>
 <Files ".user.ini">
 <IfModule mod_authz_core.c>
 	Require all denied

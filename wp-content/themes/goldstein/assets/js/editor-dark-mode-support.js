@@ -41,4 +41,4 @@ function twentytwentyoneDarkModeEditorInit( attempt ) {
 		document.documentElement.classList.add( 'is-dark-theme' );
 		container.classList.add( 'is-dark-theme' );
 	}
-}
+};

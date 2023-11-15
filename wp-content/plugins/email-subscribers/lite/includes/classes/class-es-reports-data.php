@@ -217,7 +217,7 @@ if ( ! class_exists( 'ES_Reports_Data' ) ) {
 					return $cached_data;
 				}
 			}
-
+			
 			$total_subscribed = self::get_total_subscribed_contacts( $args );
 
 			$action_types       = ES()->get_action_types();
@@ -234,27 +234,41 @@ if ( ! class_exists( 'ES_Reports_Data' ) ) {
 				$avg_open_rate = ( $total_email_opens * 100 ) / $total_message_sent;
 			}
 
+			$avg_click_rate = 0;
+			if ( $total_message_sent > 0 ) {
+				$avg_click_rate = ( $total_links_clicks * 100 ) / $total_message_sent;
+			}
+
+			$avg_unsubscribe_rate = 0;
+			if ( $total_message_sent > 0 ) {
+				$avg_unsubscribe_rate = ( $total_unsubscribed * 100 ) / $total_message_sent;
+			}
+
 			/**
 			 * - Get recent 10 campaigns
 			 *      - Get total open (3)
 			 *      - Get total clicks (4)
 			 *      - Get total unsubscribe (5)
 			 */
-			
-			$data = self::get_campaign_stats( $campaign_count );
+			$data = array();
+			if ( 'es_dashboard' === $page || 'wp_dashboard' === $page ) {
+				$data = self::get_campaign_stats( $campaign_count );
+			}
 
 			$reports_data = array(
-				'total_subscribed'   => number_format( $total_subscribed ),
-				'total_email_opens'  => number_format( $total_email_opens ),
-				'total_links_clicks' => number_format( $total_links_clicks ),
-				'total_message_sent' => number_format( $total_message_sent ),
-				'total_unsubscribed' => number_format( $total_unsubscribed ),
-				'avg_open_rate'      => number_format( $avg_open_rate, 2 ),
-				'contacts_growth'    => $contacts_growth,
+				'total_subscribed'     => number_format( $total_subscribed ),
+				'total_email_opens'    => number_format( $total_email_opens ),
+				'total_links_clicks'   => number_format( $total_links_clicks ),
+				'total_message_sent'   => number_format( $total_message_sent ),
+				'total_unsubscribed'   => number_format( $total_unsubscribed ),
+				'avg_open_rate'        => number_format( $avg_open_rate, 2 ),
+				'avg_click_rate'       => number_format( $avg_click_rate, 2 ),
+				'avg_unsubscribe_rate' => number_format( $avg_unsubscribe_rate, 2 ),
+				'contacts_growth'      => $contacts_growth,
 			);
 
-			$is_dashboard_page = 'es_dashboard' === $page;
-			if ( $is_dashboard_page ) {
+			$include_average_campaigns_stats = 'es_dashboard' === $page || 'es_campaigns' === $page;
+			if ( $include_average_campaigns_stats ) {
 				$comp_args         = $args;
 				$comp_args['days'] = $args['days'] * 2;
 
@@ -300,6 +314,11 @@ if ( ! class_exists( 'ES_Reports_Data' ) ) {
 						$hard_bounces_percentage_growth = ( ( $total_hard_bounces - $hard_bounces_before_two_months ) / $hard_bounces_before_two_months ) * 100;
 					} else {
 						$hard_bounces_percentage_growth = 0;
+					}
+
+					if ( $total_message_sent > 0 ) {
+						$avg_bounce_rate                 = ( $total_hard_bounces * 100 ) / $total_message_sent;
+						$reports_data['avg_bounce_rate'] = $avg_bounce_rate ? number_format_i18n( $avg_bounce_rate, 2 ) : 0;
 					}
 	
 					$reports_data['total_hard_bounced_contacts']    = number_format_i18n( $total_hard_bounces );

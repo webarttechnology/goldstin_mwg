@@ -46,9 +46,11 @@ if ( ! class_exists( 'ES_Router' ) ) {
 
 			$response = array();
 
-			check_ajax_referer( 'ig-es-admin-ajax-nonce', 'security' );
+			if (  ! defined( 'IG_ES_DEV_MODE' ) || ! IG_ES_DEV_MODE ) {
+				check_ajax_referer( 'ig-es-admin-ajax-nonce', 'security' );
+			}
 
-			$request = $_POST;
+			$request = $_REQUEST;
 			
 			$handler       = ig_es_get_data( $request, 'handler' );
 			$handler_class = 'ES_' . ucfirst( $handler ) . '_Controller';
@@ -67,9 +69,15 @@ if ( ! class_exists( 'ES_Router' ) ) {
 				wp_send_json_error( $response );
 			}
 
-			$data = ig_es_get_request_data( 'data', array(), false );
+			$data   = ig_es_get_request_data( 'data', array(), false );
+			$result = call_user_func( array( $handler_class, $method ), $data );
 
-			$response = call_user_func( array( $handler_class, $method ), $data );
+			if ( $result ) {
+				$response['success'] = true;
+				$response['data']    = $result;
+			} else {
+				$response['success'] = false;
+			}
 
 			wp_send_json( $response );
 		}

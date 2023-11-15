@@ -67,11 +67,11 @@ class Serialized {
 	/**
 	 * Go through every registered serialized table and update them one by one
 	 *
-	 * @param array $tables - The tables to update.
-	 *
 	 * @since 5.2.5 - Only update provided tables.
 	 *
-	 * @return int[]
+	 * @param array<int, string> $tables - The tables to update.
+	 *
+	 * @return array<string, int>
 	 */
 	public function update_all_serialized_tables( array $tables ) {
 		$serialized_tables = Database::instance()->get_serialized_tables();
@@ -81,7 +81,7 @@ class Serialized {
 			if ( ! \in_array( $table, $tables, true ) ) {
 				continue;
 			}
-			$counts[ $table ] = array_sum( array_map( function( $column ) use ( $table ) {
+			$counts[ $table ] = \array_sum( \array_map( function( $column ) use ( $table ) {
 				return $this->update_table( $table, $column );
 			}, (array) $columns ) );
 		}
@@ -144,13 +144,26 @@ class Serialized {
 	/**
 	 * Replaces all the occurrences of a string in a multidimensional array or Object
 	 *
+	 * @noinspection OffsetOperationsInspection
+	 *
 	 * @since 5.2.0
 	 *
-	 * @param object|array|string|null $data - Data to change.
+	 * @param object|array|string|int|float|null $data - Data to change.
 	 *
-	 * @return array|null|object|string
+	 * @return object|array|string|int|float|null
 	 */
 	public function replace_tree( $data ) {
+		if ( null === $data ) {
+			return null;
+		}
+
+		if ( \is_int( $data ) || \is_float( $data ) ) {
+			if ( \is_numeric( $this->old ) ) {
+				return $this->replace( (string) $data );
+			}
+			return $data;
+		}
+
 		if ( \is_string( $data ) ) {
 			return $this->replace( $data );
 		}
@@ -160,10 +173,12 @@ class Serialized {
 			return $data;
 		}
 
+		// @phpstan-ignore-next-line -- Sanity check.
 		if ( ! \is_array( $data ) && ! \is_object( $data ) ) {
 			return $data;
 		}
 
+		// @phpstan-ignore-next-line -- Classes are iterables but have no conditions to check.
 		foreach ( $data as $key => $item ) {
 			$updated_key = '';
 			if ( \is_string( $key ) ) {
@@ -278,7 +293,7 @@ class Serialized {
 	 * @return bool
 	 */
 	protected function has_missing_classes( $data ) {
-		if ( is_a( $data, \__PHP_Incomplete_Class::class ) ) {
+		if ( ! \is_array( $data ) && is_a( $data, \__PHP_Incomplete_Class::class ) ) {
 			// Hack to get the name of the class from __PHP_Incomplete_Class without `Error`.
 			foreach ( (array) $data as $key => $name ) {
 				if ( '__PHP_Incomplete_Class_Name' === $key ) {

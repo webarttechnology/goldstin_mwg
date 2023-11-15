@@ -149,7 +149,12 @@ class ES_Handle_Post_Notification {
 							// Prepare subject
 							$post_subject = self::prepare_subject( $notification_subject, $post );
 
-							$post_content = self::prepare_body( $notification_body, $post_id, 0, $notification_id );
+							if ( ES_Common::contains_posts_block( $notification_body ) ) {
+								$post_content = ES_Common::replace_single_posts_block( $notification_body, array( $post_id ) );
+							} else {
+								$post_content = self::prepare_body( $notification_body, $post_id, 0, $notification_id );
+							}
+
 
 							$guid = ES_Common::generate_guid( 6 );
 
@@ -406,7 +411,11 @@ class ES_Handle_Post_Notification {
 		}
 
 		$content['subject'] = self::prepare_subject( $campaign_subject, $post );
-		$content['body']    = self::prepare_body( $template_content, $post_id, $template_id );
+		if ( ES_Common::contains_posts_block( $template_content ) ) {
+			$content['body'] = ES_Common::replace_single_posts_block( $template_content, array( $post_id ) );
+		} else {
+			$content['body'] = self::prepare_body( $template_content, $post_id, $template_id );
+		}
 
 		return $content;
 	}

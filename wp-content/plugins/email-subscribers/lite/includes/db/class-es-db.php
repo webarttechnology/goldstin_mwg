@@ -155,13 +155,20 @@ abstract class ES_DB {
 	 *
 	 * @modfiy 4.7.3 Added support to retrieve data from cache
 	 */
-	public function get_by_conditions( $where = '', $output = ARRAY_A, $use_cache = false ) {
+	public function get_by_conditions( $where = '', $output = ARRAY_A, $use_cache = false, $order_by_column = '', $order = '' ) {
 		global $wpbd;
 
 		$query = "SELECT * FROM $this->table_name";
 
 		if ( ! empty( $where ) ) {
 			$query .= " WHERE $where";
+		}
+
+		if ( ! empty( $order_by_column ) ) {
+			$query .= ' ORDER BY ' . esc_sql( $order_by_column );
+			if ( ! empty( $order ) ) {
+				$query .= ' ' . esc_sql( $order );
+			}
 		}
 
 		if ( true === $use_cache ) {

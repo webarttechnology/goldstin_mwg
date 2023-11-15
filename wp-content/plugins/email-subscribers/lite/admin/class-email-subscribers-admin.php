@@ -158,9 +158,17 @@ class Email_Subscribers_Admin {
 			wp_enqueue_style( 'select2' );
 		}
 
-		wp_enqueue_style( 'ig-es-style', plugin_dir_url( __FILE__ ) . 'dist/main.css', array(), $this->version, 'all' );
-
 		$current_page          = ig_es_get_request_data( 'page' );
+		$enqueue_tailwind 	   = in_array( $current_page, array( 'es_gallery', 'es_campaigns' ), true );
+		
+		if ( ! $enqueue_tailwind ) {
+			wp_enqueue_style( 'ig-es-style', plugin_dir_url( __FILE__ ) . 'dist/main.css', array(), $this->version, 'all' );
+		}
+		
+		if ( $enqueue_tailwind ) {
+			wp_enqueue_style( 'ig-es-tw-style', plugin_dir_url( __FILE__ ) . 'dist/tailwind.css', array(), $this->version, 'all' );
+		}
+
 		$enqueue_flag_icon_css = in_array( $current_page, array( 'es_dashboard', 'es_subscribers', 'es_reports' ), true );
 		if ( $enqueue_flag_icon_css ) {
 			wp_enqueue_style( 'flag-icon-css', 'https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/3.5.0/css/flag-icon.min.css', array(), $this->version, 'all' );
@@ -312,6 +320,28 @@ class Email_Subscribers_Admin {
 			}
 		}
 
+		if ( 'es_campaigns' === $page ) {
+			wp_register_script( 'mithril', plugins_url( '/js/mithril.min.js', __FILE__ ), array(), '2.0.4', true );
+			wp_enqueue_script( 'mithril' );
+			
+			wp_register_script( 'ig-es-main-js', plugins_url( '/dist/index.js', __FILE__ ), array( 'mithril' ), '2.0.4', true );
+				// wp_register_script( 'ig-es-main-js', plugins_url( '/dist/main.js', __FILE__ ), array( 'mithril' ), '2.0.4', true );
+			wp_enqueue_script( 'ig-es-main-js' );
+
+			if ( ! function_exists( 'ig_es_wp_js_editor_admin_scripts' ) ) {
+				/**
+				 * Include WP JS Editor library's main file. This file contains required functions to enqueue required js file which being used to create WordPress editor dynamcially.
+				 */
+				require_once ES_PLUGIN_DIR . 'lite/includes/libraries/wp-js-editor/wp-js-editor.php';
+			}
+
+			add_filter( 'tiny_mce_before_init', array( 'ES_Common', 'override_tinymce_formatting_options' ), 10, 2 );
+			add_filter( 'mce_external_plugins', array( 'ES_Common', 'add_mce_external_plugins' ) );
+
+			// Load required html/js for dynamic WordPress editor.
+			ig_es_wp_js_editor_admin_scripts();
+		}
+
 		// timepicker
 		wp_register_script( $this->email_subscribers . '-timepicker', plugin_dir_url( __FILE__ ) . 'js/jquery.timepicker.js', array( 'jquery' ), ES_PLUGIN_VERSION, true );
 		wp_enqueue_script( $this->email_subscribers . '-timepicker' );
@@ -392,7 +422,6 @@ class Email_Subscribers_Admin {
 			add_submenu_page( 'es_dashboard', __( 'Broadcast', 'email-subscribers' ), '<span id="ig-es-broadcast">' . __( 'Broadcast', 'email-subscribers' ) . '</span>', 'edit_posts', 'es_newsletters', array( $this, 'load_campaign_admin_page' ) );
 			add_submenu_page( null, __( 'Template Preview', 'email-subscribers' ), __( 'Template Preview', 'email-subscribers' ), 'edit_posts', 'es_template_preview', array( $this, 'load_preview' ) );
 
-			add_submenu_page( 'es_dashboard', __( 'Gallery', 'email-subscribers' ), '<span id="ig-es-gallery-submenu">' . __( 'Gallery', 'email-subscribers' ) . '</span>', 'edit_posts', 'es_gallery', array( $this, 'load_gallery' ) );
 			add_submenu_page( null, __( 'Template', 'email-subscribers' ), '<span id="ig-es-gallery-submenu">' . __( 'Templates', 'email-subscribers' ) . '</span>', 'edit_posts', 'es_template', array( $this, 'load_template' ) );
 		}
 
@@ -582,16 +611,6 @@ class Email_Subscribers_Admin {
 		$campaign_admin = ES_Campaign_Admin::get_instance();
 		$campaign_admin->setup();
 		$campaign_admin->render();
-	}
-
-	/**
-	 * Load template gallery
-	 *
-	 * @return void
-	 */
-	public function load_gallery() {
-		$gallery = ES_Gallery::get_instance();
-		$gallery->render();
 	}
 
 	/**
@@ -1006,32 +1025,6 @@ class Email_Subscribers_Admin {
 			}
 		}
 
-	}
-
-	/**
-	 * Method to handle campaign status change
-	 *
-	 * @return string JSON response of the request
-	 *
-	 * @since 4.4.4
-	 */
-	public function toggle_campaign_status() {
-
-		check_ajax_referer( 'ig-es-admin-ajax-nonce', 'security' );
-
-		$campaign_id         = ig_es_get_request_data( 'campaign_id' );
-		$new_campaign_status = ig_es_get_request_data( 'new_campaign_status' );
-
-		if ( ! empty( $campaign_id ) ) {
-
-			$status_updated = ES()->campaigns_db->update_status( $campaign_id, $new_campaign_status );
-
-			if ( $status_updated ) {
-				wp_send_json_success();
-			} else {
-				wp_send_json_error();
-			}
-		}
 	}
 
 	/**
@@ -1779,8 +1772,8 @@ class Email_Subscribers_Admin {
 		$gallery_type = ig_es_get_request_data( 'gallery_type' );
 
 		if ( 'remote' === $gallery_type ) {
-			$gallery  = ES_Gallery::get_instance();
-			$template = $gallery->get_remote_gallery_item( $template_id );
+			$gallery_controller  = ES_Gallery_Controller::get_instance();
+			$template = $gallery_controller::get_remote_gallery_item( $template_id );
 			
 			$es_template_body = $template->content->rendered;
 			$es_template_type = $template->es_template_type;

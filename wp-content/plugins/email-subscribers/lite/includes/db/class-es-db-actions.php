@@ -367,6 +367,11 @@ class ES_DB_Actions extends ES_DB {
 			$where[] = $wpbd->prepare( "contact_id IN(SELECT contact_id FROM `{$wpbd->prefix}ig_lists_contacts` WHERE list_id = %d )", esc_sql( $args['list_id'] ) );
 		}
 
+		if ( ! empty( $args['campaign_id'] ) ) {
+			// Since list_id isn't store for sent/opened/clicked/bounced events, we are using contacts ids from list_contacts table from list id.
+			$where[] = $wpbd->prepare( 'campaign_id = %d', esc_sql( $args['campaign_id'] ) );
+		}
+
 		if ( ! empty( $args['days'] ) ) {
 			$where[] = $wpbd->prepare( 'created_at >= UNIX_TIMESTAMP(DATE_SUB(NOW(), INTERVAL %d DAY))', esc_sql( $args['days'] ) );
 		}

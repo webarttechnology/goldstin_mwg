@@ -61,7 +61,7 @@
 		<p class="pt-3 xl:pr-3 2xl:pr-0 text-sm text-gray-500">
 			<?php
 				/* translators: Mailer name name */
-				echo sprintf( esc_html__( 'Emails beyond the first 100 will be sent through %s.', 'email-subscribers' ), '<a href="' . esc_url( $settings_url ) . '" target="_blank">' . esc_html( $current_mailer_name ) . '</a>' );
+				echo sprintf( esc_html__( 'Emails beyond the first %1$d will be sent through %2$s.', 'email-subscribers' ), esc_html( $allocated_limit ), '<a href="' . esc_url( $settings_url ) . '" target="_blank">' . esc_html( $current_mailer_name ) . '</a>' );
 			?>
 		</p>
 	</div>

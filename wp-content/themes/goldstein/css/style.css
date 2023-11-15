@@ -890,7 +890,13 @@ span.page-description.search-term {
 }
 
 
-.abutcountingsec{padding:100px 0px;background: linear-gradient(0deg , rgb(78 78 78 / 30%), rgb(6 6 6 / 80%)),url(../images/lady-justice-2388500_1920.jpg);position: relative; background-size: cover !important; background-attachment: fixed !important;color: #fff}
+.abutcountingsec{
+	padding:10px 0px;
+/* 	background: linear-gradient(0deg , rgb(78 78 78 / 30%), rgb(6 6 6 / 80%)),url(../images/lady-justice-2388500_1920.jpg); */
+	position: relative; 
+	background-size: cover !important; 
+	background-attachment: fixed !important;color: #fff
+}
 
 .abtvisionsec{padding: 50px 0px}
 .abtvisionsec h1{font-family: "Bebas Neue", cursive;}
